@@ -60,6 +60,13 @@ export interface UserResponse {
   birthdate: Date;
 }
 
+export interface ProductResponse {
+  name: true;
+  description: true;
+  price: true;
+  img: true;
+}
+
 export async function getUser(userId: string): Promise<UserResponse | null> {
   await connect();
 
@@ -77,4 +84,24 @@ export async function getUser(userId: string): Promise<UserResponse | null> {
   }
 
   return user;
+}
+
+export async function getProduct(
+  productId: string
+): Promise<ProductResponse | null> {
+  await connect();
+
+  const productProjection = {
+    name: true,
+    description: true,
+    price: true,
+    img: true,
+  };
+  const product = await Products.findById(productId, productProjection);
+
+  if (product === null) {
+    return null;
+  }
+
+  return product;
 }

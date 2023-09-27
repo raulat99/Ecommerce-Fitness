@@ -16,7 +16,7 @@ export async function GET(
 
   const product = await getProduct(params.productId);
 
-  if (product === null) {
+  if (product == null) {
     return NextResponse.json({}, { status: 404 });
   }
 
