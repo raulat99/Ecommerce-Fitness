@@ -2,6 +2,8 @@ import Products, { Product } from '@/models/Product';
 import connect from '@/lib/mongoose';
 import Users, { User } from '@/models/User';
 import { Types } from 'mongoose';
+import Orders, { Order } from '@/models/Order';
+import { TurboLoaderItem } from 'next/dist/server/config-shared';
 
 export interface ProductsResponse {
   products: Product[];
@@ -77,4 +79,47 @@ export async function getUser(userId: string): Promise<UserResponse | null> {
   }
 
   return user;
+}
+
+
+//PARA ORDERS
+export interface OrdersResponse {
+  orders: Order[];
+}
+
+export async function getOrders(): Promise<OrdersResponse> {
+  await connect();
+  const orderProjection = {
+    qty: true,
+    price: true,
+  };
+  const orders = await Orders.find({}, orderProjection);
+  return { orders: orders };
+}
+
+
+//PARA ORDERID
+export interface OrderResponse{
+  date: Date;
+  address: string;
+  cardHolder: string;
+  cardNumber: string;
+}
+
+export async function getOrder(orderId: string): Promise<OrderResponse | null> {
+  await connect();
+
+  const orderProjection = {
+    date: true,
+    address: true,
+    cardHolder: true,
+    cardNumber: true,
+  };
+
+  const order = await Orders.findById(orderId, orderProjection);
+  
+  if (order === null){
+    return null;
+  }
+  return order;
 }

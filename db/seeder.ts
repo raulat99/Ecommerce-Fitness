@@ -22,6 +22,23 @@ const products: Product[] = [
     },
   ];
 
+  const orders: Order[] = [
+    {
+      address: " Unnamed Street 123 , 12345 London , UK" ,
+      cardHolder: " Foo Bar " ,
+      cardNumber: "0000111122223333",
+      date: new Date('1970-01-01'),
+      orderItems:[]
+    },
+  ];
+
+  const orderProjection = {
+    address: true ,
+    cardHolder: true,
+    cardNumber: true,
+    date: true,
+    orderItems: true,
+  }
 
   const userProjection = {
     name: true,
@@ -45,6 +62,36 @@ async function seed() {
   const conn = await mongoose.connect(MONGODB_URI, opts);
 
   await conn.connection.db.dropDatabase();
+
+
+  const insertedProducts = await Products.insertMany(products);
+  const insertedOrders = await Orders.insertMany(orders);
+    const user: User = {
+      email: 'johndoe@example.com',
+      password: '1234',
+      name: 'John',
+      surname: 'Doe',
+      address: '123 Main St, 12345 New York, United States',
+      birthdate: new Date('1970-01-01'),
+      cartItems: [
+        {
+          product: insertedProducts[0]._id,
+          qty: 2,
+        },
+        {
+          product: insertedProducts[1]._id,
+          qty: 5,
+        },
+      ],
+      orders: [
+          insertedOrders[0]._id,
+      ],
+    };
+    const res = await Users.create(user);
+    console.log(JSON.stringify(res, null, 2));
+  
+    
+
   //// Do things here.
 
   //COMENTARIO: ESTO ES PARA CREAR UN USUARIO
@@ -103,31 +150,7 @@ async function seed() {
         .populate('cartItems.product', productProjection);
     console.log(JSON.stringify(retrievedUserConSelection, null, 2));*/
 
-    const insertedProducts = await Products.insertMany(products);
-    const user: User = {
-      email: 'johndoe@example.com',
-      password: '1234',
-      name: 'John',
-      surname: 'Doe',
-      address: '123 Main St, 12345 New York, United States',
-      birthdate: new Date('1970-01-01'),
-      cartItems: [
-        {
-          product: insertedProducts[0]._id,
-          qty: 2,
-        },
-        {
-          product: insertedProducts[1]._id,
-          qty: 5,
-        },
-      ],
-      orders: [],
-    };
-    const res = await Users.create(user);
-    console.log(JSON.stringify(res, null, 2));
-  
     
-
   await conn.disconnect();
 }
 
