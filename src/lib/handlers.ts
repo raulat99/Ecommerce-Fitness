@@ -67,6 +67,10 @@ export interface ProductResponse {
   img: true;
 }
 
+export interface CartResponse {
+  products: User["cartItems"];
+}
+
 export async function getUser(userId: string): Promise<UserResponse | null> {
   await connect();
 
@@ -104,4 +108,19 @@ export async function getProduct(
   }
 
   return product;
+}
+
+export async function getCart(userId: string): Promise<CartResponse | null> {
+  await connect();
+
+  const cartProjection = {
+    cartItems: true
+  };
+  const cart = await Users.findById(userId, cartProjection);
+
+  if (cart == null) {
+    return null;
+  }
+
+  return cart;
 }

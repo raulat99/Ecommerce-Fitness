@@ -4,8 +4,8 @@
 
 # POR JULIÁN
 
-GET /api/products/{productId}
-GET /api/users/{userId}/cart
+~GET /api/products/{productId}~
+~GET /api/users/{userId}/cart~
 PUT /api/users/{userId}/cart/{productId}
 DELETE /api/users/{userId}/cart/{productId}
 
