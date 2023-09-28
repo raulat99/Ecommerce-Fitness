@@ -21,10 +21,17 @@ export async function PUT(
     return NextResponse.json({}, { status: 400 });
   }
 
-  const cartItems = await updateCartItem(params.userId, params.productId, body.qty);
+  const output = await updateCartItem(
+    params.userId,
+    params.productId,
+    body.qty
+  );
 
-  if (cartItems === null) return NextResponse.json({}, { status:400 })
+  const cartItems = output?.cartItems;
+  const created = output?.created;
 
-  return NextResponse.json(cartItems);
-  
+  if (cartItems === null) return NextResponse.json({}, { status: 400 });
+
+  if (created) return NextResponse.json(cartItems, { status: 201 });
+  else return NextResponse.json(cartItems, { status: 200 });
 }

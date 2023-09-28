@@ -112,7 +112,7 @@ export async function updateCartItem(
     created: created
   };
 
-  return updatedUser; //// tenemos que devolver un boolean tambien
+  return output; //// tenemos que devolver un boolean tambien
 }
 
 export interface UserResponse {
@@ -131,7 +131,8 @@ export interface ProductResponse {
 }
 
 export interface UpdateCartItemResponse {
-  cartItems: User['cartItems'];
+  cartItems: User['cartItems'],
+  created: boolean;
 }
 
 export interface CartResponse {
