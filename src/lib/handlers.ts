@@ -22,6 +22,10 @@ export interface CreateUserResponse {
   _id: Types.ObjectId | string;
 }
 
+export interface CreateUserResponse {
+  _id: Types.ObjectId | string;
+}
+
 export async function createUser(user: {
   email: string;
   password: string;
@@ -52,6 +56,56 @@ export async function createUser(user: {
   };
 }
 
+//UpdateCartItem function to perform PUT operation
+
+export async function updateCartItem(
+  userId: string,
+  productId: string,
+  qty: number
+): Promise<UpdateCartItemResponse | null> {
+  await connect();
+
+  const product = await Products.findById(productId);
+  if (product === null) return null;
+
+  const user = await Users.findById(userId);
+  if (user === null) return null;
+
+  const cartItem = user.cartItems.find(
+    (cartItem: any) =>
+      cartItem.product._id.equals(productId)
+  );
+
+  if (cartItem) {
+    //TRUE: Cambiamos la cantidad
+    cartItem.qty = qty
+
+  } else {
+    //cambiamos la cantidad
+    const newCartItem = {
+      product: new Types.ObjectId(productId),
+      qty: qty
+    }
+
+    user.cartItems.push(newCartItem);
+  }
+
+  await user.save();
+
+  const userProjection = {
+    _id: false,
+    cartItems: {
+      products: true,
+      qty: true,
+    }
+  }
+
+  const updatedUser = Users
+    .findById(userId, userProjection)
+
+  return updatedUser;
+}
+
 export interface UserResponse {
   email: string;
   name: string;
@@ -67,8 +121,12 @@ export interface ProductResponse {
   img: true;
 }
 
+export interface UpdateCartItemResponse {
+  cartItems: User['cartItems'];
+}
+
 export interface CartResponse {
-  products: User["cartItems"];
+  cartItems: User['cartItems'];
 }
 
 export async function getUser(userId: string): Promise<UserResponse | null> {
@@ -113,14 +171,23 @@ export async function getProduct(
 export async function getCart(userId: string): Promise<CartResponse | null> {
   await connect();
 
-  const cartProjection = {
-    cartItems: true
+  const productProjection = {
+    name: true,
+    price: true,
   };
-  const cart = await Users.findById(userId, cartProjection);
+
+  const cartProjection = {
+    cartItems: true,
+  };
+
+  const cart = await Users.findById(userId, cartProjection).populate(
+    'cartItems.product',
+    productProjection
+  );
 
   if (cart == null) {
     return null;
   }
 
-  return cart;
+  return cart; 
 }
