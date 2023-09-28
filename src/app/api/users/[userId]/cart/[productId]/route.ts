@@ -21,7 +21,7 @@ export async function PUT(
     return NextResponse.json({}, { status: 400 });
   }
 
-  const cartItems = updateCartItem(params.userId, params.productId, body.qty);
+  const cartItems = await updateCartItem(params.userId, params.productId, body.qty);
 
   if (cartItems === null) return NextResponse.json({}, { status:400 })
 

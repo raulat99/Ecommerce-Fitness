@@ -64,6 +64,7 @@ export async function updateCartItem(
   qty: number
 ): Promise<UpdateCartItemResponse | null> {
   await connect();
+  var created;
 
   const product = await Products.findById(productId);
   if (product === null) return null;
@@ -79,7 +80,7 @@ export async function updateCartItem(
   if (cartItem) {
     //TRUE: Cambiamos la cantidad
     cartItem.qty = qty
-
+    created = false
   } else {
     //cambiamos la cantidad
     const newCartItem = {
@@ -88,22 +89,30 @@ export async function updateCartItem(
     }
 
     user.cartItems.push(newCartItem);
+    created = true
   }
 
   await user.save();
 
   const userProjection = {
     _id: false,
-    cartItems: {
-      products: true,
-      qty: true,
-    }
+    cartItems: true
   }
 
-  const updatedUser = Users
-    .findById(userId, userProjection)
+  const productProjection = {
+    name: true,
+    price: true
+  };
 
-  return updatedUser;
+  const updatedUser = await Users
+    .findById(userId, userProjection).populate("cartItems.product", productProjection)
+
+  const output = {
+    cartItems: updatedUser,
+    created: created
+  };
+
+  return updatedUser; //// tenemos que devolver un boolean tambien
 }
 
 export interface UserResponse {
