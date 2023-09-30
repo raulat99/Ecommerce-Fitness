@@ -115,6 +115,46 @@ export async function updateCartItem(
   return output; //// tenemos que devolver un boolean tambien
 }
 
+
+export async function deleteCartItem(
+  userId: string,
+  productId: string
+): Promise<DeleteCartItemResponse | null> {
+  await connect();
+
+  const product = await Products.findById(productId);
+  if (product === null) return null;
+
+  const user = await Users.findById(userId);
+  if (user === null) return null;
+
+  const index = user.cartItems.findIndex(
+    (cartItem: any) =>
+      cartItem.product._id.equals(productId)
+  );
+
+  if (index === -1) return null;
+
+  user.cartItems.splice(index, 1);
+
+  await user.save();
+
+  const userProjection = {
+    _id: false,
+    cartItems: true
+  }
+
+  const productProjection = {
+    name: true,
+    price: true
+  };
+
+  const updatedUser = await Users
+    .findById(userId, userProjection).populate("cartItems.product", productProjection)
+
+  return updatedUser;
+}
+
 export interface UserResponse {
   email: string;
   name: string;
@@ -133,6 +173,10 @@ export interface ProductResponse {
 export interface UpdateCartItemResponse {
   cartItems: User['cartItems'],
   created: boolean;
+}
+
+export interface DeleteCartItemResponse {
+  cartItems: User['cartItems'];
 }
 
 export interface CartResponse {

@@ -1,4 +1,5 @@
 import { UpdateCartItemResponse, updateCartItem } from '@/lib/handlers';
+import { DeleteCartItemResponse, deleteCartItem } from '@/lib/handlers';
 import { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
 import { NonNullChain } from 'typescript';
@@ -35,3 +36,34 @@ export async function PUT(
   if (created) return NextResponse.json(cartItems, { status: 201 });
   else return NextResponse.json(cartItems, { status: 200 });
 }
+
+
+export async function DELETE(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: { userId: string; productId: string };
+  }
+): Promise<NextResponse<DeleteCartItemResponse> | null | {}> {
+  const body = await request.json();
+
+  if (!body.qty || !params.userId || !params.productId) {
+    return NextResponse.json({}, { status: 400 });
+  }
+
+  if (params.userId == null || params.productId == null) {
+    return NextResponse.json({}, { status: 400 });
+  }
+
+  const cartItems = await deleteCartItem(
+    params.userId,
+    params.productId
+  )
+
+  if (null) return NextResponse.json({}, { status: 404 });
+
+  return NextResponse.json(cartItems, { status: 200 });
+
+}
+
