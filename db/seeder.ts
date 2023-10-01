@@ -22,15 +22,7 @@ const products: Product[] = [
     },
   ];
 
-  const orders: Order[] = [
-    {
-      address: " Unnamed Street 123 , 12345 London , UK" ,
-      cardHolder: " Foo Bar " ,
-      cardNumber: "0000111122223333",
-      date: new Date('1970-01-01'),
-      orderItems:[]
-    },
-  ];
+  
 
   const orderProjection = {
     address: true ,
@@ -65,6 +57,34 @@ async function seed() {
 
 
   const insertedProducts = await Products.insertMany(products);
+
+  const orders: Order[] = [
+    {
+      address: " Unnamed Street 123 , 12345 London , UK" ,
+      cardHolder: " Foo Bar " ,
+      cardNumber: "0000111122223333",
+      date: new Date('1970-01-01'),
+      orderItems:[
+        {
+          product: insertedProducts[0]._id,
+          qty: 5,
+          price: 40,
+        },
+        {
+          product: insertedProducts[1]._id,
+          qty: 5,
+          price: 40,
+        },
+      ]
+    },
+    {
+      address: " Another address 456 , 45678 London , UK" ,
+      cardHolder: " Foo Bar " ,
+      cardNumber: "4455667788990011",
+      date: new Date('1970-01-01'),
+      orderItems:[]
+    },
+  ];
   const insertedOrders = await Orders.insertMany(orders);
     const user: User = {
       email: 'johndoe@example.com',
@@ -83,9 +103,7 @@ async function seed() {
           qty: 5,
         },
       ],
-      orders: [
-          insertedOrders[0]._id,
-      ],
+      orders: [insertedOrders[0]._id, insertedOrders[1]._id],
     };
     const res = await Users.create(user);
     console.log(JSON.stringify(res, null, 2));
@@ -150,6 +168,13 @@ async function seed() {
         .populate('cartItems.product', productProjection);
     console.log(JSON.stringify(retrievedUserConSelection, null, 2));*/
 
+    const ordersSelect = await Orders.findOne({
+      cardHolder:" Foo Bar ",
+      date: "1970-01-01T00:00:00.000Z",
+      cardNumber: "4455667788990011",
+      orderItems: []
+    });
+    console.log(JSON.stringify(ordersSelect, null, 2))
     
   await conn.disconnect();
 }

@@ -1,24 +1,27 @@
 import { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
-import { getOrder, OrderResponse } from '@/lib/handlers';
+import { getOrder, getUser, OrderResponse } from '@/lib/handlers';
 
 export async function GET(
   request: NextRequest,
   {
     params,
   }: {
-    params: { orderId: string };
+    params: { userId:string, orderId: string };
   }
 ): Promise<OrderResponse | {}> {
-  if (!Types.ObjectId.isValid(params.orderId)) {
+  if (!Types.ObjectId.isValid(params.userId)) {
     return NextResponse.json({}, { status: 400 });
   }
 
-  const order = await getOrder(params.orderId);
+  const user = await getUser(params.userId);
 
-  if (order === null) {
+  if (user === null) {
     return NextResponse.json({}, { status: 404 });
   }
 
+  const order = await getOrder(params.userId, params.orderId);
+
+  
   return NextResponse.json(order);
 }

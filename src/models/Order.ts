@@ -16,7 +16,7 @@ export interface Order {
 const OrderSchema = new Schema({
     date: {
         type: Date,
-        required: true,
+        required: false,
     },
     address:  {
         type: String,

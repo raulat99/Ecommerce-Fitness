@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser, CreateUserResponse } from '@/lib/handlers';
 
+/*
+
+cuando haga el get user by id, haga el populate para obtener todo lo necesario del cartItem
+
+también hay que borrar el cart
+
+y borrar los cart items
+
+el nuevo objeto de OrderID tiene que ir para el user
+
+hay que hacer tmb user.save() para actualizar los cambios
+
+*/
+
+
 export async function POST(
   request: NextRequest
 ): Promise<NextResponse<CreateUserResponse> | {}> {
