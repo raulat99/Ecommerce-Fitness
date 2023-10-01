@@ -25,6 +25,10 @@ export interface CreateUserResponse {
   _id: Types.ObjectId | string;
 }
 
+export interface CreateUserResponse {
+  _id: Types.ObjectId | string;
+}
+
 export async function createUser(user: {
   email: string;
   password: string;
@@ -55,12 +59,131 @@ export async function createUser(user: {
   };
 }
 
+//UpdateCartItem function to perform PUT operation
+
+export async function updateCartItem(
+  userId: string,
+  productId: string,
+  qty: number
+): Promise<UpdateCartItemResponse | null> {
+  await connect();
+  var created;
+
+  const product = await Products.findById(productId);
+  if (product === null) return null;
+
+  const user = await Users.findById(userId);
+  if (user === null) return null;
+
+  const cartItem = user.cartItems.find(
+    (cartItem: any) =>
+      cartItem.product._id.equals(productId)
+  );
+
+  if (cartItem) {
+    //TRUE: Cambiamos la cantidad
+    cartItem.qty = qty
+    created = false
+  } else {
+    //cambiamos la cantidad
+    const newCartItem = {
+      product: new Types.ObjectId(productId),
+      qty: qty
+    }
+
+    user.cartItems.push(newCartItem);
+    created = true
+  }
+
+  await user.save();
+
+  const userProjection = {
+    _id: false,
+    cartItems: true
+  }
+
+  const productProjection = {
+    name: true,
+    price: true
+  };
+
+  const updatedUser = await Users
+    .findById(userId, userProjection).populate("cartItems.product", productProjection)
+
+  const output = {
+    cartItems: updatedUser,
+    created: created
+  };
+
+  return output; //// tenemos que devolver un boolean tambien
+}
+
+
+export async function deleteCartItem(
+  userId: string,
+  productId: string
+): Promise<DeleteCartItemResponse | null> {
+  await connect();
+
+  const product = await Products.findById(productId);
+  if (product === null) return null;
+
+  const user = await Users.findById(userId);
+  if (user === null) return null;
+
+  const index = user.cartItems.findIndex(
+    (cartItem: any) =>
+      cartItem.product._id.equals(productId)
+  );
+
+  if (index === -1) return null;
+
+  user.cartItems.splice(index, 1);
+
+  await user.save();
+
+  const userProjection = {
+    _id: false,
+    cartItems: true
+  }
+
+  const productProjection = {
+    name: true,
+    price: true
+  };
+
+  const updatedUser = await Users
+    .findById(userId, userProjection).populate("cartItems.product", productProjection)
+
+  return updatedUser;
+}
+
 export interface UserResponse {
   email: string;
   name: string;
   surname: string;
   address: string;
   birthdate: Date;
+}
+
+export interface ProductResponse {
+  name: true;
+  description: true;
+  price: true;
+  img: true;
+}
+
+export interface UpdateCartItemResponse {
+  cartItems: User['cartItems'],
+  created: boolean;
+}
+
+export interface DeleteCartItemResponse {
+  cartItems: User['cartItems'];
+}
+
+export interface CartResponse {
+  cartItems: User['cartItems'];
 }
 
 export async function getUser(userId: string): Promise<UserResponse | null> {
@@ -81,6 +204,54 @@ export async function getUser(userId: string): Promise<UserResponse | null> {
 
   return user;
 }
+
+
+
+export async function getCart(userId: string): Promise<CartResponse | null> {
+  await connect();
+
+  const productProjection = {
+    name: true,
+    price: true,
+  };
+
+  const cartProjection = {
+    cartItems: true,
+  };
+
+  const cart = await Users.findById(userId, cartProjection).populate(
+    'cartItems.product',
+    productProjection
+  );
+
+  if (cart == null) {
+    return null;
+  }
+
+  return cart; 
+}
+
+export async function getProduct(
+  productId: string
+): Promise<ProductResponse | null> {
+  await connect();
+
+  const productProjection = {
+    name: true,
+    description: true,
+    price: true,
+    img: true,
+  };
+  const product = await Products.findById(productId, productProjection);
+
+  if (product === null) {
+    return null;
+  }
+
+  return product;
+}
+
+
 
 
 //PARA ORDERS DEL USERID
