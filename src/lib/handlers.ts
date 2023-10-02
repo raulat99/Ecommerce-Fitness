@@ -341,28 +341,47 @@ export interface CreateOrderResponse{
   _id: Types.ObjectId | string
 }
 
-export async function createOrder(order:{
+export async function createOrder(userId:string , order:{
   address: string;
   cardHolder: string;
   cardNumber: string;
 }): Promise<CreateOrderResponse | null>{
   await connect();
 
-  const prevOrder = await Orders.find({
+  const user = await Users.findById(userId);
+  if (user === null) return null;
+
+  const cart = await getCart(userId);
+  if (cart === null) return null;
+
+  const cartItems = cart.cartItems;
+
+  const doc: Order = {
     address: order.address,
     cardHolder: order.cardHolder,
     cardNumber: order.cardNumber,
-  });
-
-  if(prevOrder.length !== 0){return null;}
-
-  const doc: Order = {
-    ...order,
     date: new Date('1970-01-01'),
     orderItems: [],
   };
 
+  for (var productCartItem of cartItems){
+    console.log("Un producto: " + productCartItem)
+    let objetoTemporal = await Products.findById(productCartItem.product, {price: true, _id: true})
+
+    doc.orderItems.push(
+      {
+        product: objetoTemporal._id,
+        qty: productCartItem.qty,
+        price: objetoTemporal.price,
+      }
+    )
+  }
+
   const newOrder = await Orders.create(doc);
+
+  user.cartItems = []
+  user.orders.push(newOrder)
+  user.save()
 
   return {
     _id: newOrder._id,
