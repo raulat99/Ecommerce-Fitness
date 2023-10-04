@@ -46,9 +46,8 @@ export async function DELETE(
     params: { userId: string; productId: string };
   }
 ): Promise<NextResponse<DeleteCartItemResponse> | null | {}> {
-  const body = await request.json();
 
-  if (!body.qty || !params.userId || !params.productId) {
+  if (!params.userId || !params.productId) {
     return NextResponse.json({}, { status: 400 });
   }
 

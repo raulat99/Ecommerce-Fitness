@@ -387,36 +387,3 @@ export async function createOrder(userId:string , order:{
     _id: newOrder._id,
   };
 }
-
-/*
-export async function createUser(user: {
-  email: string;
-  password: string;
-  name: string;
-  surname: string;
-  address: string;
-  birthdate: Date;
-}): Promise<CreateUserResponse | null> {
-  await connect();
-
-  const prevUser = await Users.find({ email: user.email });
-
-  if (prevUser.length !== 0) {
-    return null;
-  }
-
-  const doc: User = {
-    ...user,
-    birthdate: new Date(user.birthdate),
-    cartItems: [],
-    orders: [],
-  };
-
-  const newUser = await Users.create(doc);
-
-  return {
-    _id: newUser._id,
-  };
-}
-
-*/
