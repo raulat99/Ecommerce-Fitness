@@ -47,6 +47,12 @@ export async function POST(request :NextRequest,
     }
     const orders = await createOrder(params.userId, body);
 
+    const emptyCartTemporal = orders?.emptyCart;
+
+    if(emptyCartTemporal){
+      return NextResponse.json({}, { status: 400 });
+    }
+
     if (orders === null){
       return NextResponse.json({}, { status: 404 });
     }
@@ -54,8 +60,7 @@ export async function POST(request :NextRequest,
     const headers = new Headers();
 
     headers.append('Location', `/api/users/${params.userId}/orders`);
-    //return NextResponse.json({ _id: userId._id }, { status: 201, headers: headers });
 
-    return NextResponse.json(orders, { status: 201, headers: headers });
+    return NextResponse.json({ _id: orders._id }, { status: 201, headers: headers });
 
 }

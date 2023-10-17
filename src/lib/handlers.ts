@@ -76,6 +76,7 @@ export interface OrderResponse {
 
 export interface CreateOrderResponse {
   _id: Types.ObjectId | string;
+  emptyCart: boolean;
 }
 
 
@@ -376,12 +377,22 @@ export async function createOrder(
     cardHolder: string;
     cardNumber: string;
   }
-): Promise<CreateOrderResponse | null> {
+): Promise<CreateOrderResponse | null > {
   await connect();
+
+  let emtpyCartTemporal = false;
 
   const user = await Users.findById(userId);
   if (user === null) return null;
 
+  if(user.cartItems.length === 0){
+    emtpyCartTemporal = true;
+    return {
+      _id: "",
+      emptyCart: emtpyCartTemporal
+    };
+  }
+  
   const cart = await getCart(userId);
   if (cart === null) return null;
 
@@ -417,5 +428,6 @@ export async function createOrder(
 
   return {
     _id: newOrder._id,
+    emptyCart: emtpyCartTemporal
   };
 }
