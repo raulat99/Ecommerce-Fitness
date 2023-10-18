@@ -3,6 +3,9 @@ import { DeleteCartItemResponse, deleteCartItem } from '@/lib/handlers';
 import { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
 import { NonNullChain } from 'typescript';
+import { Session } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/authOptions';
 
 export async function PUT(
   request: NextRequest,
@@ -14,12 +17,22 @@ export async function PUT(
 ): Promise<NextResponse<UpdateCartItemResponse> | null | {}> {
   const body = await request.json();
 
+  const session: Session | null = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return NextResponse.json({}, { status: 401 });
+  }
+
   if (!body.qty || !params.userId || !params.productId) {
     return NextResponse.json({}, { status: 400 });
   }
 
   if (params.userId == null || params.productId == null) {
     return NextResponse.json({}, { status: 400 });
+  }
+
+  if (session.user._id !== params.userId) {
+    return NextResponse.json({}, { status: 403 });
   }
 
   const output = await updateCartItem(
@@ -37,7 +50,6 @@ export async function PUT(
   else return NextResponse.json(cartItems, { status: 200 });
 }
 
-
 export async function DELETE(
   request: NextRequest,
   {
@@ -46,6 +58,11 @@ export async function DELETE(
     params: { userId: string; productId: string };
   }
 ): Promise<NextResponse<DeleteCartItemResponse> | null | {}> {
+  const session: Session | null = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return NextResponse.json({}, { status: 401 });
+  }
 
   if (!params.userId || !params.productId) {
     return NextResponse.json({}, { status: 400 });
@@ -55,14 +72,13 @@ export async function DELETE(
     return NextResponse.json({}, { status: 400 });
   }
 
-  const cartItems = await deleteCartItem(
-    params.userId,
-    params.productId
-  )
+  if (session.user._id !== params.userId) {
+    return NextResponse.json({}, { status: 403 });
+  }
+
+  const cartItems = await deleteCartItem(params.userId, params.productId);
 
   if (null) return NextResponse.json({}, { status: 404 });
 
   return NextResponse.json(cartItems, { status: 200 });
-
 }
-
