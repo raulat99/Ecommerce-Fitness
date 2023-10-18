@@ -7,9 +7,87 @@ import { TurboLoaderItem } from 'next/dist/server/config-shared';
 import { ObjectType } from 'typescript';
 import bcrypt from 'bcrypt';
 
+
+////////////////////////////////////////////////////////////////////////////////
+//        INTERFACES
+////////////////////////////////////////////////////////////////////////////////
+
 export interface ProductsResponse {
   products: Product[];
 }
+
+export interface ProductResponse {
+  name: true;
+  description: true;
+  price: true;
+  img: true;
+}
+
+export interface UpdateCartItemResponse {
+  cartItems: User['cartItems'];
+  created: boolean;
+}
+
+export interface DeleteCartItemResponse {
+  cartItems: User['cartItems'];
+}
+
+export interface CartResponse {
+  cartItems: User['cartItems'];
+}
+
+export interface CreateUserResponse {
+  _id: Types.ObjectId | string;
+}
+
+export interface CreateUserResponse {
+  _id: Types.ObjectId | string;
+}
+
+export interface UserResponse {
+  email: string;
+  name: string;
+  surname: string;
+  address: string;
+  birthdate: Date;
+}
+
+export interface OrdersResponse {
+  orders: {
+    date: Date;
+    address: string;
+    cardHolder: string;
+    cardNumber: string;
+  }[];
+}
+
+export interface OrderItem {
+  product: Types.ObjectId;
+  qty: number;
+  price: number;
+}
+
+export interface OrderResponse {
+  date: Date;
+  address: string;
+  cardHolder: string;
+  cardNumber: string;
+  orderItems: OrderItem[];
+}
+
+export interface CreateOrderResponse {
+  _id: Types.ObjectId | string;
+  emptyCart: boolean;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//        REST METHODS
+////////////////////////////////////////////////////////////////////////////////
+
+
+//GET -> /api/products
 
 export async function getProducts(): Promise<ProductsResponse> {
   await connect();
@@ -22,13 +100,7 @@ export async function getProducts(): Promise<ProductsResponse> {
   return { products: products };
 }
 
-export interface CreateUserResponse {
-  _id: Types.ObjectId | string;
-}
-
-export interface CreateUserResponse {
-  _id: Types.ObjectId | string;
-}
+//POST -> /api/users
 
 export async function createUser(user: {
   email: string;
@@ -63,7 +135,7 @@ export async function createUser(user: {
   };
 }
 
-//UpdateCartItem function to perform PUT operation
+//PUT -> /api/users/{userId}/cart/{productId}
 
 export async function updateCartItem(
   userId: string,
@@ -79,49 +151,51 @@ export async function updateCartItem(
   const user = await Users.findById(userId);
   if (user === null) return null;
 
-  const cartItem = user.cartItems.find(
-    (cartItem: any) =>
-      cartItem.product._id.equals(productId)
+  const cartItem = user.cartItems.find((cartItem: any) =>
+    cartItem.product._id.equals(productId)
   );
 
   if (cartItem) {
-    //TRUE: Cambiamos la cantidad
-    cartItem.qty = qty
-    created = false
+    
+    cartItem.qty = qty;
+    created = false;
   } else {
-    //cambiamos la cantidad
+    
     const newCartItem = {
       product: new Types.ObjectId(productId),
-      qty: qty
-    }
+      qty: qty,
+    };
 
     user.cartItems.push(newCartItem);
-    created = true
+    created = true;
   }
 
   await user.save();
 
   const userProjection = {
     _id: false,
-    cartItems: true
-  }
+    cartItems: true,
+  };
 
   const productProjection = {
     name: true,
-    price: true
+    price: true,
   };
 
-  const updatedUser = await Users
-    .findById(userId, userProjection).populate("cartItems.product", productProjection)
+  const updatedUser = await Users.findById(userId, userProjection).populate(
+    'cartItems.product',
+    productProjection
+  );
 
   const output = {
     cartItems: updatedUser,
-    created: created
+    created: created,
   };
 
-  return output; //// tenemos que devolver un boolean tambien
+  return output; 
 }
 
+//DELETE ->  /api/users/{userId}/cart/{productId}
 
 export async function deleteCartItem(
   userId: string,
@@ -135,9 +209,8 @@ export async function deleteCartItem(
   const user = await Users.findById(userId);
   if (user === null) return null;
 
-  const index = user.cartItems.findIndex(
-    (cartItem: any) =>
-      cartItem.product._id.equals(productId)
+  const index = user.cartItems.findIndex((cartItem: any) =>
+    cartItem.product._id.equals(productId)
   );
 
   if (index === -1) return null;
@@ -148,47 +221,23 @@ export async function deleteCartItem(
 
   const userProjection = {
     _id: false,
-    cartItems: true
-  }
+    cartItems: true,
+  };
 
   const productProjection = {
     name: true,
-    price: true
+    price: true,
   };
 
-  const updatedUser = await Users
-    .findById(userId, userProjection).populate("cartItems.product", productProjection)
+  const updatedUser = await Users.findById(userId, userProjection).populate(
+    'cartItems.product',
+    productProjection
+  );
 
   return updatedUser;
 }
 
-export interface UserResponse {
-  email: string;
-  name: string;
-  surname: string;
-  address: string;
-  birthdate: Date;
-}
-
-export interface ProductResponse {
-  name: true;
-  description: true;
-  price: true;
-  img: true;
-}
-
-export interface UpdateCartItemResponse {
-  cartItems: User['cartItems'],
-  created: boolean;
-}
-
-export interface DeleteCartItemResponse {
-  cartItems: User['cartItems'];
-}
-
-export interface CartResponse {
-  cartItems: User['cartItems'];
-}
+//GET /api/users/{userId}
 
 export async function getUser(userId: string): Promise<UserResponse | null> {
   await connect();
@@ -209,8 +258,7 @@ export async function getUser(userId: string): Promise<UserResponse | null> {
   return user;
 }
 
-
-
+//GET -> /api/users/{userId}/cart
 export async function getCart(userId: string): Promise<CartResponse | null> {
   await connect();
 
@@ -232,9 +280,10 @@ export async function getCart(userId: string): Promise<CartResponse | null> {
     return null;
   }
 
-  return cart; 
+  return cart;
 }
 
+//GET -> /api/products/{productId}
 export async function getProduct(
   productId: string
 ): Promise<ProductResponse | null> {
@@ -255,18 +304,7 @@ export async function getProduct(
   return product;
 }
 
-
-
-
-//PARA ORDERS DEL USERID
-export interface OrdersResponse {
-  orders: {date: Date;
-  address: string;
-  cardHolder: string;
-  cardNumber: string;
-  }[]
-}
-
+//GET -> /api/users/{userId}/orders
 export async function getOrders(userId: string): Promise<OrdersResponse> {
   await connect();
   const orderProjection = {
@@ -284,31 +322,19 @@ export async function getOrders(userId: string): Promise<OrdersResponse> {
     orders: true,
   };
 
-  const user = await Users.findById(userId, userProjection).populate('orders', orderProjection)
+  const user = await Users.findById(userId, userProjection).populate(
+    'orders',
+    orderProjection
+  );
 
-  
-
-  return {orders: user.orders};
+  return { orders: user.orders };
 }
 
-
-
-//PARA ODERSID DEL ORDERS DEL USERID
-export interface OrderItem{
-  product: Types.ObjectId,
-  qty: number,
-  price: number,
-}
-
-export interface OrderResponse{
-  date: Date;
-  address: string;
-  cardHolder: string;
-  cardNumber: string;
-  orderItems: OrderItem[];
-}
-
-export async function getOrder(userId: string, orderId: string): Promise<OrderResponse | any> {
+//GET -> /api/users/{userId}/orders/{orderId}
+export async function getOrder(
+  userId: string,
+  orderId: string
+): Promise<OrderResponse | any> {
   await connect();
 
   const orderProjection = {
@@ -330,33 +356,47 @@ export async function getOrder(userId: string, orderId: string): Promise<OrderRe
   const productProjection = {
     name: true,
   };
-  
-  const user = await Users.findById(userId, userProjection)
 
-  const orderIdElegido = user.orders.find((item: any) => item.toString() === orderId.toString())
+  const user = await Users.findById(userId, userProjection);
 
-  const orderElegido = await Orders.findById(orderIdElegido,orderProjection).populate('orderItems.product', productProjection)
+  const orderIdElegido = user.orders.find(
+    (item: any) => item.toString() === orderId.toString()
+  );
 
-  console.log(JSON.stringify(orderElegido, null,2));
+  const orderElegido = await Orders.findById(
+    orderIdElegido,
+    orderProjection
+  ).populate('orderItems.product', productProjection);
 
-  return {orderElegido};
+  console.log(JSON.stringify(orderElegido, null, 2));
+
+  return { orderElegido };
 }
 
-//PARA CREAR UN ORDER
-export interface CreateOrderResponse{
-  _id: Types.ObjectId | string
-}
-
-export async function createOrder(userId:string , order:{
-  address: string;
-  cardHolder: string;
-  cardNumber: string;
-}): Promise<CreateOrderResponse | null>{
+//POST /api/users/{userId}/orders
+export async function createOrder(
+  userId: string,
+  order: {
+    address: string;
+    cardHolder: string;
+    cardNumber: string;
+  }
+): Promise<CreateOrderResponse | null > {
   await connect();
+
+  let emtpyCartTemporal = false;
 
   const user = await Users.findById(userId);
   if (user === null) return null;
 
+  if(user.cartItems.length === 0){
+    emtpyCartTemporal = true;
+    return {
+      _id: "",
+      emptyCart: emtpyCartTemporal
+    };
+  }
+  
   const cart = await getCart(userId);
   if (cart === null) return null;
 
@@ -370,26 +410,28 @@ export async function createOrder(userId:string , order:{
     orderItems: [],
   };
 
-  for (var productCartItem of cartItems){
-    console.log("Un producto: " + productCartItem)
-    let objetoTemporal = await Products.findById(productCartItem.product, {price: true, _id: true})
+  for (var productCartItem of cartItems) {
+    console.log('Un producto: ' + productCartItem);
+    let objetoTemporal = await Products.findById(productCartItem.product, {
+      price: true,
+      _id: true,
+    });
 
-    doc.orderItems.push(
-      {
-        product: objetoTemporal._id,
-        qty: productCartItem.qty,
-        price: objetoTemporal.price,
-      }
-    )
+    doc.orderItems.push({
+      product: objetoTemporal._id,
+      qty: productCartItem.qty,
+      price: objetoTemporal.price,
+    });
   }
 
   const newOrder = await Orders.create(doc);
 
-  user.cartItems = []
-  user.orders.push(newOrder)
-  user.save()
+  user.cartItems = [];
+  user.orders.push(newOrder);
+  user.save();
 
   return {
     _id: newOrder._id,
+    emptyCart: emtpyCartTemporal
   };
 }
