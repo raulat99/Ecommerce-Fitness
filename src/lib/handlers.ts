@@ -5,6 +5,7 @@ import { ObjectId, Types } from 'mongoose';
 import Orders, { Order } from '@/models/Order';
 import { TurboLoaderItem } from 'next/dist/server/config-shared';
 import { ObjectType } from 'typescript';
+import bcrypt from 'bcrypt';
 
 export interface ProductsResponse {
   products: Product[];
@@ -45,8 +46,11 @@ export async function createUser(user: {
     return null;
   }
 
+  const hash = await bcrypt.hash(user.password, 10);
+
   const doc: User = {
     ...user,
+    password: hash,
     birthdate: new Date(user.birthdate),
     cartItems: [],
     orders: [],
@@ -281,6 +285,8 @@ export async function getOrders(userId: string): Promise<OrdersResponse> {
   };
 
   const user = await Users.findById(userId, userProjection).populate('orders', orderProjection)
+
+  
 
   return {orders: user.orders};
 }

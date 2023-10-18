@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import Users, { User } from '@/models/User';
 import Products, { Product } from '@/models/Product';
 import Orders, { Order } from '@/models/Order';
+import bcrypt from 'bcrypt';
 
 dotenv.config({ path: `.env.local`, override: true });
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -20,6 +21,18 @@ const products: Product[] = [
       img: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
       description: 'Yet another item',
     },
+    {
+      name: 'Harry Potter',
+      price: 5.95,
+      img: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
+      description: 'MagiaPotagia',
+    },
+    {
+      name: "Lord of the rings",
+      price: 15.95,
+      img: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
+      description: 'El anillo',
+    }
   ];
 
   
@@ -85,10 +98,14 @@ async function seed() {
       orderItems:[]
     },
   ];
+
+  const hash = await bcrypt.hash('1234', 10);
+
+
   const insertedOrders = await Orders.insertMany(orders);
     const user: User = {
       email: 'johndoe@example.com',
-      password: '1234',
+      password: hash,
       name: 'John',
       surname: 'Doe',
       address: '123 Main St, 12345 New York, United States',
