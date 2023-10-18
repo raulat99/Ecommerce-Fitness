@@ -12,7 +12,7 @@ export async function GET(
   }: {
     params: { userId: string };
   }
-): Promise<UserResponse | {}> {
+): Promise<NextResponse<UserResponse> | {}> {
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session?.user) {
