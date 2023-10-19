@@ -125,7 +125,27 @@ async function seed() {
     const res = await Users.create(user);
     console.log(JSON.stringify(res, null, 2));
   
-    
+    const user1: User = {
+      email: 'pepe@example.com',
+      password: hash,
+      name: 'Pepe',
+      surname: 'Gonzalez',
+      address: '123 Main St, 12345 New York, United States',
+      birthdate: new Date('1970-01-01'),
+      cartItems: [
+        {
+          product: insertedProducts[0]._id,
+          qty: 2,
+        },
+        {
+          product: insertedProducts[1]._id,
+          qty: 5,
+        },
+      ],
+      orders: [insertedOrders[0]._id, insertedOrders[1]._id],
+    };
+    const res1 = await Users.create(user1);
+    console.log(JSON.stringify(res1, null, 2));
 
   //// Do things here.
 

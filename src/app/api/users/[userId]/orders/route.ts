@@ -2,6 +2,10 @@ import { CreateOrderResponse, OrdersResponse, createOrder, getOrders, getUser } 
 import Users, {User} from '@/models/User';
 import { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
+import { Session } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/authOptions';
+
 
 export async function GET(
 request: NextRequest,
@@ -12,8 +16,17 @@ request: NextRequest,
 }
 ): Promise<NextResponse<OrdersResponse | {}>> {
 
+  const session: Session | null = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return NextResponse.json({}, { status: 401 });
+  }
+
   if (!Types.ObjectId.isValid(params.userId)) {
     return NextResponse.json({}, { status: 400 });
+  }
+  if (session.user._id !== params.userId) {
+    return NextResponse.json({}, { status: 403 });
   }
   const user = await getUser(params.userId);
 
@@ -35,9 +48,14 @@ export async function POST(request :NextRequest,
         params: {userId: string};
     }):
     Promise<NextResponse<CreateOrderResponse> | {}> {
-    
+    const session: Session | null = await getServerSession(authOptions);
+
     const body = await request.json();
 
+    if (!session?.user) {
+      return NextResponse.json({}, { status: 401 });
+    }
+    
     if (!body.address || !body.cardHolder || !body.cardNumber) {
         return NextResponse.json({}, { status: 400 });
       }
@@ -45,6 +63,11 @@ export async function POST(request :NextRequest,
     if (params.userId === null) {
     return NextResponse.json({}, { status: 400 });
     }
+
+    if (session.user._id !== params.userId) {
+      return NextResponse.json({}, { status: 403 });
+    }
+    
     const orders = await createOrder(params.userId, body);
 
     const emptyCartTemporal = orders?.emptyCart;
