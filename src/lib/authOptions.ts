@@ -1,6 +1,6 @@
-import connect from '@/lib/mongoose';
 import { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import connect from '@/lib/mongoose';
 import Users from '@/models/User';
 import bcrypt from 'bcrypt';
 
@@ -22,27 +22,25 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         await connect();
 
-        if(!credentials?.email || !credentials?.password){
-            return null;
-        }
-        
-        const user = await Users.findOne({email: credentials.email})
-        
-        if(user === null){
-            return null;
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
 
-        if (user.password !== credentials.password){
+        const user = await Users.findOne({
+          email: credentials?.email,
+        });
+
+        if (user === null) {
           return null;
         }
 
         const match = await bcrypt.compare(credentials.password, user.password);
 
-        if(!match){
+        if (!match) {
           return null;
         }
 
-        return { _id: user._id.toString() } as User;
+        return { _id: 'ID_HERE' } as User;
       },
     }),
   ],
