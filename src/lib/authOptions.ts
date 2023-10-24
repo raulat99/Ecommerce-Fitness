@@ -22,7 +22,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         await connect();
-        console.log("Aqui");
 
         if(!credentials?.email || !credentials?.password){
             console.log("El email o password no existen");
