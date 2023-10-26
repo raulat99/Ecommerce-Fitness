@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/authOptions';
 import { notFound, redirect } from 'next/navigation';
 import { Session } from 'next-auth';
-import { CartResponse,  getCart } from '@/lib/handlers';
+import { CartResponse, getCart } from '@/lib/handlers';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';

@@ -10,16 +10,16 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 const products: Product[] = [
     {
-      name: 'Earthen Bottle',
+      name: 'Black and Red Straps',
       price: 39.95,
-      img: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg',
-      description: 'What a bottle!',
+      img: 'https://cdn.shopify.com/s/files/1/0525/5872/5271/products/ADRISUNNER-7842.jpg?v=1653643246&width=2240',
+      description: 'Enhance your training!',
     },
     {
-      name: 'Nomad Tumbler',
-      price: 39.95,
-      img: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
-      description: 'Yet another item',
+      name: 'Dumbell',
+      price: 19.95,
+      img: 'https://krag.es/wp-content/uploads/2021/11/dumbell-600x600.jpeg',
+      description: '22.5 KG for a true weigthlifter',
     },
     {
       name: 'Harry Potter',

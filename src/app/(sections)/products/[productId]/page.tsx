@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getProduct } from '@/lib/handlers';
 
 export default async function Product({
-  params,
+  params, 
 }: {
   params: { productId: string };
 }) {
