@@ -22,16 +22,16 @@ const products: Product[] = [
       description: '22.5 KG for a true weigthlifter',
     },
     {
-      name: 'Harry Potter',
-      price: 5.95,
-      img: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
-      description: 'MagiaPotagia',
+      name: 'Training Sleeveless Shirt',
+      price: 14.95,
+      img: 'https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQfY0hAJxDfT9nvzLHm7rlUwYbl-9OxBeWsidMx5mL2NGAR11hN386A-ixxrnUsw4Rll47fs5FhYvWogHM4r06wH6pAuZ-pEcMzwSxe0uf4iHXzjNO7Pfxp&usqp=CAc',
+      description: 'Turtleneck Black Sleeveless Shirt. Only for gymrats!',
     },
     {
-      name: "Lord of the rings",
-      price: 15.95,
-      img: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
-      description: 'El anillo',
+      name: "Training Shorts",
+      price: 9.95,
+      img: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSBEymZXIpC_III9EnMIsZllGfUr_CxZTPf1YtLlLry5YrEuiJPTShVldCRRDOhqs_ve44_o2jeJ3iDAeCoc1bi_0sAk0qruzxAPqjIaOXzf1OnAgk_cSvmIg&usqp=CAc',
+      description: 'Best shorts in the market!',
     }
   ];
 
