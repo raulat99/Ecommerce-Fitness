@@ -12,8 +12,10 @@ export async function GET(
   }: {
     params: { userId: string };
   }
-): Promise<NextResponse<CartResponse> | {}> {
+): Promise<NextResponse<CartResponse> | {} | null> {
   const session: Session | null = await getServerSession(authOptions);
+
+
 
   if (!session?.user) {
     return NextResponse.json({}, { status: 401 });

@@ -17,6 +17,10 @@ export async function PUT(
 ): Promise<NextResponse<UpdateCartItemResponse> | null | {}> {
   const body = await request.json();
 
+  if(!(Types.ObjectId.isValid(params.userId)&&Types.ObjectId.isValid(params.productId))){
+    return NextResponse.json({}, { status: 400 });
+  }
+
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -74,6 +78,10 @@ export async function DELETE(
 
   if (session.user._id !== params.userId) {
     return NextResponse.json({}, { status: 403 });
+  }
+
+  if (!(Types.ObjectId.isValid(params.userId) && Types.ObjectId.isValid(params.productId))) {
+    return NextResponse.json({}, { status: 400 });
   }
 
   const cartItems = await deleteCartItem(params.userId, params.productId);

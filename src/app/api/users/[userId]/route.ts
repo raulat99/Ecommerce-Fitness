@@ -24,6 +24,9 @@ export async function GET(
   if (session.user._id !== params.userId) {
     return NextResponse.json({}, { status: 403 });
   }
+  if (!Types.ObjectId.isValid(params.userId)) {
+    return NextResponse.json({}, { status: 400 });
+  }
 
   const user = await getUser(params.userId);
 
