@@ -11,5 +11,5 @@
 ### JULIÁN
 
   - /products/[productId]
-  - /profile
+  - ~/profile~
   - /auth/signup

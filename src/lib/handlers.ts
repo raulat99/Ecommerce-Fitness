@@ -54,6 +54,7 @@ export interface UserResponse {
 
 export interface OrdersResponse {
   orders: {
+    _id: Types.ObjectId | string;
     date: Date;
     address: string;
     cardHolder: string;
