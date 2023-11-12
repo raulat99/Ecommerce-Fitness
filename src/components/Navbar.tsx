@@ -13,7 +13,7 @@ export default async function Navbar() {
   const session: Session | null = await getServerSession(authOptions);
 
   return (
-    <nav className='fixed top-0 z-50 w-full bg-blue-400 bg-opacity-80 backdrop-blur-lg backdrop-filter'>
+    <nav className='fixed top-0 z-50 w-full bg-gray-700 bg-opacity-60 backdrop-blur-lg backdrop-filter'>
       <div className='mx-auto max-w-7xl px-6 sm:px-8 lg:px-10'>
         <div className='relative flex h-16 items-center justify-between'>
           <div className='flex flex-1 items-stretch justify-start'>
@@ -21,7 +21,7 @@ export default async function Navbar() {
               className='flex flex-shrink-0 items-center space-x-4 text-gray-300 hover:text-gray-100'
               href='/'
             >
-              <img className='block h-8 w-auto' src='/img/logo.svg' alt='Fitness Stop logo'/>
+              <img className='block h-8 w-auto' src='/img/logo3.png' alt='Fitness Stop logo'/>
               
               <div className='inline-block w-auto text-xl font-semibold'>
                 Fitness & Health
