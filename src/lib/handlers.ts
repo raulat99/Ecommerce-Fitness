@@ -269,6 +269,7 @@ export async function getCart(userId: string): Promise<CartResponse | null> {
 
   const cartProjection = {
     cartItems: true,
+    _id: false
   };
 
   const cart = await Users.findById(userId, cartProjection).populate(
@@ -370,7 +371,7 @@ export async function getOrder(
 
   console.log(JSON.stringify(orderElegido, null, 2));
 
-  return { orderElegido };
+  return orderElegido;
 }
 
 //POST /api/users/{userId}/orders
@@ -410,19 +411,7 @@ export async function createOrder(
     orderItems: [],
   };
 
-  for (var productCartItem of cartItems) {
-    console.log('Un producto: ' + productCartItem);
-    let objetoTemporal = await Products.findById(productCartItem.product, {
-      price: true,
-      _id: true,
-    });
-
-    doc.orderItems.push({
-      product: objetoTemporal._id,
-      qty: productCartItem.qty,
-      price: objetoTemporal.price,
-    });
-  }
+  
 
   const newOrder = await Orders.create(doc);
 

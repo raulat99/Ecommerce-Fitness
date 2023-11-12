@@ -27,14 +27,7 @@ export async function GET(
     return NextResponse.json({}, { status: 403 });
   }
 
-  const user = await getUser(params.userId);
-
-  if (user === null) {
-    return NextResponse.json({}, { status: 404 });
-  }
-
   const order = await getOrder(params.userId, params.orderId);
 
-  
   return NextResponse.json(order);
 }

@@ -28,11 +28,6 @@ request: NextRequest,
   if (session.user._id !== params.userId) {
     return NextResponse.json({}, { status: 403 });
   }
-  const user = await getUser(params.userId);
-
-  if (user === null) {
-    return NextResponse.json({}, { status: 404 });
-  }
 
   const orders = await getOrders(params.userId);
 
@@ -66,6 +61,10 @@ export async function POST(request :NextRequest,
 
     if (session.user._id !== params.userId) {
       return NextResponse.json({}, { status: 403 });
+    }
+
+    if (!Types.ObjectId.isValid(params.userId)) {
+      return NextResponse.json({}, { status: 400 });
     }
     
     const orders = await createOrder(params.userId, body);
