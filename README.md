@@ -4,7 +4,7 @@
 
 ### RAÚL
 
-  - /cart
+  - ~/cart~
   - /checkout
   - /orders/[orderId]
 
