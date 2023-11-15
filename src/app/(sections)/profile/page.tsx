@@ -93,19 +93,24 @@ export default async function Profile() {
               <th scope='col' className='px-6 py-3'>
                 Payment Information
               </th>
-              <th scope='col' className='px-6 py-3'>
-              </th>
+              <th scope='col' className='px-6 py-3'></th>
             </tr>
           </thead>
           <tbody>
             {orderData.orders.map((order) => (
-              <tr key={order._id.toString()} className="bg-gray-200 border-b">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+              <tr key={order._id.toString()} className='border-b bg-gray-200'>
+                <th
+                  scope='row'
+                  className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'
+                >
                   {order._id.toString()}
                 </th>
                 <td className='whitespace-nowrap px-6 py-4'>{order.address}</td>
                 <td className='whitespace-nowrap px-6 py-4'>
-                  Esto hay que modificarlo
+                  <div>
+                    <div>{order.cardNumber}</div>
+                    <div>{order.cardHolder}</div>
+                  </div>
                 </td>
                 <td className='whitespace-nowrap px-6 py-4'>View Details</td>
               </tr>
