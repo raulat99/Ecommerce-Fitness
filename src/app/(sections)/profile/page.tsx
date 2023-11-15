@@ -112,7 +112,9 @@ export default async function Profile() {
                     <div>{order.cardHolder}</div>
                   </div>
                 </td>
-                <td className='whitespace-nowrap px-6 py-4'>View Details</td>
+                <td className='whitespace-nowrap px-6 py-4'>
+                  <Link href={`/orders/${order._id}`}>View Details</Link>
+                </td>
               </tr>
             ))}
           </tbody>

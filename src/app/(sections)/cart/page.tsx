@@ -146,7 +146,7 @@ export default async function Cart() {
           </section>
           <div className='text-center my-4'>
               <button className='rounded-full bg-gray-900 px-4 py-2 font-bold text-white hover:bg-gray-700'>
-                Check out
+                <Link href='/checkout'>Check out</Link>
               </button>
             </div>
         </>
