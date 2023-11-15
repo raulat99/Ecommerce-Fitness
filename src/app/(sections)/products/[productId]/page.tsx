@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { notFound } from 'next/navigation';
 import { getProduct } from '@/lib/handlers';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 export default async function Product({
   params,
@@ -19,14 +20,14 @@ export default async function Product({
 
   return (
     <div className='flex flex-col sm:flex-row'>
-      <div className='max-w-sm'>
+      <div className='mx-auto max-w-sm'>
         <img
           src={product.img}
           alt={product.name}
           className='w-full rounded-lg object-cover object-center group-hover:opacity-75'
         />
 
-        <div className='my-5 ml-3'>
+        <div className='my-5 text-center'>
           {product.price && (
             <p
               style={{
@@ -39,17 +40,23 @@ export default async function Product({
           )}
         </div>
 
-        <div className='custom-number-input h-10 w-32 ml-5 my-5'>
-          <div className='relative mt-1 flex h-10 w-full flex-row rounded-lg bg-transparent'>
-            <button className=' h-full w-20 cursor-pointer rounded-l bg-gray-300 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700'>
+        <div className='custom-number-input mx-auto my-5 h-10 w-72'>
+          <div className='relative flex h-10 w-full flex-row rounded-lg bg-transparent'>
+            <button className='h-full w-20 cursor-pointer rounded-l bg-gray-300 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700'>
               <span className='m-auto text-2xl font-thin'>−</span>
             </button>
 
-            <span className="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none">0</span>
+            <span className='text-md inline-block flex h-full w-16 cursor-default items-center justify-center bg-gray-300 text-center font-semibold text-gray-700 outline-none hover:text-black focus:text-black md:text-base'>
+              0
+            </span>
 
-            <button className='h-full w-20 cursor-pointer rounded-r bg-gray-300 text-gray-600 hover:bg-gray-400 hover:text-gray-700'>
+            <button className='h-full w-20 cursor-pointer bg-gray-300 text-gray-600 hover:bg-gray-400 hover:text-gray-700'>
               <span className='m-auto text-2xl font-thin'>+</span>
             </button>
+
+            <div className='flex h-full w-16 items-center justify-center rounded-r bg-gray-300 hover:bg-red-400'>
+              <TrashIcon className='h-6 w-6 text-white'></TrashIcon>
+            </div>
           </div>
         </div>
       </div>
