@@ -4,9 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Session } from 'next-auth';
 import { CartResponse, getCart } from '@/lib/handlers';
 import Link from 'next/link';
-import {
-  TrashIcon,
-} from '@heroicons/react/24/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,9 +15,7 @@ export default async function Cart() {
     redirect('/api/auth/signin');
   }
 
-  const cartItemsData: CartResponse | null = await getCart(
-    session.user._id
-  );
+  const cartItemsData: CartResponse | null = await getCart(session.user._id);
 
   if (!cartItemsData) {
     notFound();
@@ -99,14 +95,17 @@ export default async function Cart() {
                               </Link>
                             </td>
                             <td className='px-4 py-3'>
-                              <div className='relative mt-1 flex h-10 w-full flex-row rounded-lg bg-transparent'>
+                              <div className='relative mt-1 flex h-10 w-100 flex-row rounded-lg bg-transparent'>
                                 <button className=' h-full w-20 cursor-pointer rounded-l bg-gray-100 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700'>
                                   <span className='m-auto text-2xl font-thin'>
                                     −
                                   </span>
                                 </button>
                                 <input
-                                  type='number' className='text-md md:text-basecursor-default flex w-full items-center text-center font-semibold text-gray-700  outline-none outline-none hover:text-black focus:text-black  focus:outline-none' name='custom-input-number' value={cartItem.qty}
+                                  type='number'
+                                  className='text-md md:text-basecursor-default flex w-full items-center text-center font-semibold text-gray-700  outline-none outline-none hover:text-black focus:text-black  focus:outline-none'
+                                  name='custom-input-number'
+                                  value={cartItem.qty}
                                 ></input>
                                 <button
                                   data-action='increment'
@@ -123,9 +122,9 @@ export default async function Cart() {
                               {cartItem.product.price.toFixed(2) + ' €'}
                             </td>
                             <td className='px-4 py-3'>
-                              {cartItem.product.price.toFixed(2) *
-                                cartItem.qty +
-                                ' €'}
+                              {(cartItem.product.price * cartItem.qty).toFixed(
+                                2
+                              ) + ' €'}
                             </td>
                           </tr>
                         </>
@@ -136,7 +135,7 @@ export default async function Cart() {
                         <td className='px-4 py-3'> Total </td>
                         <td className='px-4 py-3'> </td>
                         <td className='px-4 py-3'> </td>
-                        <td className='px-4 py-3'> 123 €</td>
+                        <td className='px-4 py-3'> 123.00 €</td>
                       </tr>
                     </tfoot>
                   </table>
@@ -144,11 +143,11 @@ export default async function Cart() {
               </div>
             </div>
           </section>
-          <div className='text-center my-4'>
-              <button className='rounded-full bg-gray-900 px-4 py-2 font-bold text-white hover:bg-gray-700'>
-                <Link href='/checkout'>Check out</Link>
-              </button>
-            </div>
+          <div className='my-4 text-center'>
+            <button className='rounded-full bg-gray-900 px-4 py-2 font-bold text-white hover:bg-gray-700'>
+              <Link href='/checkout'>Check out</Link>
+            </button>
+          </div>
         </>
       )}
     </div>
