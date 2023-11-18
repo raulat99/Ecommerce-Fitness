@@ -2,6 +2,8 @@ import { Types } from 'mongoose';
 import { notFound } from 'next/navigation';
 import { getProduct } from '@/lib/handlers';
 import { TrashIcon } from '@heroicons/react/24/outline';
+import { Session, getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
 
 export default async function Product({
   params,
@@ -13,6 +15,7 @@ export default async function Product({
   }
 
   const product = await getProduct(params.productId);
+  const session: Session | null = await getServerSession(authOptions);
 
   if (product === null) {
     notFound();
@@ -40,7 +43,7 @@ export default async function Product({
           )}
         </div>
 
-        <div className='custom-number-input mx-auto my-5 h-10 w-72'>
+        {session && (<div className='custom-number-input mx-auto my-5 h-10 w-72'>
           <div className='relative flex h-10 w-full flex-row rounded-lg bg-transparent'>
             <button className='h-full w-20 cursor-pointer rounded-l bg-gray-300 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700'>
               <span className='m-auto text-2xl font-thin'>−</span>
@@ -58,7 +61,7 @@ export default async function Product({
               <TrashIcon className='h-6 w-6 text-white'></TrashIcon>
             </div>
           </div>
-        </div>
+        </div>)}
       </div>
 
       <div className='ml-5 w-full sm:w-1/2'>
