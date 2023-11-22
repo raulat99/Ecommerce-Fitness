@@ -1,6 +1,7 @@
 import ProductTile from '@/components/ProductTile';
 import { Product } from '@/models/Product';
 import { getProducts, ProductsResponse } from '@/lib/handlers';
+import SampleClientComponent from '@/components/SampleClientComponent';
 
 export const dynamic = 'force-dynamic';
 

@@ -4,6 +4,8 @@ import { getProduct } from '@/lib/handlers';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Session, getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
+import { CartItemsContext } from '@/providers/CartItemsProvider';
+import CartItemCounter from '@/components/CartItemCounter';
 
 export default async function Product({
   params,
@@ -43,25 +45,7 @@ export default async function Product({
           )}
         </div>
 
-        {session && (<div className='custom-number-input mx-auto my-5 h-10 w-72'>
-          <div className='relative flex h-10 w-full flex-row rounded-lg bg-transparent'>
-            <button className='h-full w-20 cursor-pointer rounded-l bg-gray-300 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700'>
-              <span className='m-auto text-2xl font-thin'>−</span>
-            </button>
-
-            <span className='text-md inline-block flex h-full w-16 cursor-default items-center justify-center bg-gray-300 text-center font-semibold text-gray-700 outline-none hover:text-black focus:text-black md:text-base'>
-              0
-            </span>
-
-            <button className='h-full w-20 cursor-pointer bg-gray-300 text-gray-600 hover:bg-gray-400 hover:text-gray-700'>
-              <span className='m-auto text-2xl font-thin'>+</span>
-            </button>
-
-            <div className='flex h-full w-16 items-center justify-center rounded-r bg-gray-300 hover:bg-red-400'>
-              <TrashIcon className='h-6 w-6 text-white'></TrashIcon>
-            </div>
-          </div>
-        </div>)}
+        {session && (<CartItemCounter productId={params.productId}/>)}
       </div>
 
       <div className='ml-5 w-full sm:w-1/2'>
