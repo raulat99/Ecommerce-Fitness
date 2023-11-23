@@ -80,7 +80,7 @@ export default function CartItemsList() {
                               </Link>
                             </td>
                             <td className='px-4 py-3'>
-                              <CartItemCounter productId={cartItem.product._id}/>
+                              <CartItemCounter productId={cartItem.product._id.toString()}/>
                             </td>
                             <td className='px-4 py-3'>
                               {cartItem.product.price.toFixed(2) + ' €'}
