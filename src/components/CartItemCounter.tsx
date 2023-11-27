@@ -41,12 +41,56 @@ export default function CartItemCounter({ productId }: CartItemCounterProps) {
     }
   };
 
+  const onMinusBtnClick = async function (event: React.MouseEvent) {
+    setIsUpdating(true);
+
+    try {
+      const res = await fetch(
+        `/api/users/${session!.user._id}/cart/${productId}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            qty: qty - 1,
+          }),
+        }
+      );
+
+      if (res.ok) {
+        const body = await res.json();
+        updateCartItems(body.cartItems);
+      }
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const onDeleteBtnClick = async function (event: React.MouseEvent) {
+    setIsUpdating(true);
+
+    try {
+      const res = await fetch(
+        `/api/users/${session!.user._id}/cart/${productId}`,
+        {
+          method: 'DELETE'
+        }
+      );
+
+      if (res.ok) {
+        const body = await res.json();
+        updateCartItems(body.cartItems);
+      }
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+
   return (
     <div className='custom-number-input mx-auto my-5 h-10 w-72'>
       <div className='relative flex h-10 w-full flex-row rounded-lg bg-transparent'>
         
         
-        <button className='h-full w-20 cursor-pointer rounded-l bg-gray-300 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700'>
+        <button onClick={onMinusBtnClick} className='h-full w-20 cursor-pointer rounded-l bg-gray-300 text-gray-600 outline-none hover:bg-gray-400 hover:text-gray-700'>
           <span className='m-auto text-2xl font-thin'>−</span>
         </button>
 
@@ -58,7 +102,7 @@ export default function CartItemCounter({ productId }: CartItemCounterProps) {
           <span className='m-auto text-2xl font-thin'>+</span>
         </button>
 
-        <div className='flex h-full w-16 items-center justify-center rounded-r bg-gray-300 hover:bg-red-400'>
+        <div onClick={onDeleteBtnClick} className='flex h-full w-16 items-center justify-center rounded-r bg-gray-300 hover:bg-red-400'>
           <TrashIcon className='h-6 w-6 text-white'></TrashIcon>
         </div>
       </div>

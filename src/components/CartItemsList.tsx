@@ -8,6 +8,11 @@ import CartItemCounter from './CartItemCounter';
 
 export default function CartItemsList() {
   const { cartItems, updateCartItems } = useContext(CartItemsContext);
+  var precioTotal = 0;
+  
+  cartItems.map((cartItem:any)=>{
+    precioTotal = precioTotal + cartItem.product.price * cartItem.qty;
+  });
 
   return (
     <>
@@ -86,12 +91,12 @@ export default function CartItemsList() {
                               {cartItem.product.price.toFixed(2) + ' €'}
                             </td>
                             <td className='px-4 py-3'>
-                              {(cartItem.product.price * cartItem.qty).toFixed(
-                                2
-                              ) + ' €'}
+                              {(cartItem.product.price * cartItem.qty).toFixed(2) + ' €'}
                             </td>
                           </tr>
                         </>
+
+                        
                       ))}
                     </tbody>
                     <tfoot>
@@ -99,7 +104,7 @@ export default function CartItemsList() {
                         <td className='px-4 py-3'> Total </td>
                         <td className='px-4 py-3'> </td>
                         <td className='px-4 py-3'> </td>
-                        <td className='px-4 py-3'> 123.00 €</td>
+                        <td className='px-4 py-3'> {precioTotal.toFixed(2) + ' €'} </td>
                       </tr>
                     </tfoot>
                   </table>
