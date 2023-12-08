@@ -1,14 +1,13 @@
 # Ecommerce-Fitness
 
-## Sprint 3: FRONT-END I
-
-### RAÚL
-
-  - ~/cart~
-  - /checkout
-  - /orders/[orderId]
+## Sprint 4: BACK-END
 
 ### JULIÁN
 
-  - ~/products/[productId]~
-  - ~/profile~
+  - ~Sign up page~
+  - ~Sign out~
+
+### RAÚL
+
+  - ~Shopping cart~
+  - Purchase
