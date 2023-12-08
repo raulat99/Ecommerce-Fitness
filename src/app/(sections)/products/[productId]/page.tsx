@@ -27,9 +27,10 @@ export default async function Product({
     <div className='flex flex-col sm:flex-row'>
       <div className='mx-auto max-w-sm'>
         <img
+          className='w-full rounded-lg object-cover object-center group-hover:opacity-75'
           src={product.img}
           alt={product.name}
-          className='w-full rounded-lg object-cover object-center group-hover:opacity-75'
+          
         />
 
         <div className='my-5 text-center'>

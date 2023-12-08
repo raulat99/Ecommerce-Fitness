@@ -411,8 +411,27 @@ export async function createOrder(
     date: new Date('1970-01-01'),
     orderItems: [],
   };
-
   
+  cartItems.map((cartItem:any)=>{
+    const orderItem: OrderItem = {
+      product: cartItem.product._id,
+      qty: cartItem.qty,
+      price: cartItem.product.price,
+    };
+    doc.orderItems.push(orderItem);
+  });
+
+  /*
+  cartItems.forEach((item: any) => {
+    const orderItem: OrderItem = {
+      product: item.product._id,
+      qty: item.qty,
+      price: item.product.price,
+    };
+    doc.orderItems.push(orderItem);
+  });
+  
+  */
 
   const newOrder = await Orders.create(doc);
 
