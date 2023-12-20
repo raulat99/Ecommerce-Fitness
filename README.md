@@ -10,4 +10,4 @@
 ### RAÚL
 
   - ~Shopping cart~
-  - Purchase
+  - ~Purchase~
