@@ -1,18 +1,43 @@
 'use client';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 //import CartItemCounter from '@/components/CartItemCounter';
 import { CartItemsContext } from '@/providers/CartItemsProvider';
 import Link from 'next/link';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import CartItemCounter from './CartItemCounter';
+import { useSession } from 'next-auth/react';
 
 export default function CartItemsList() {
   const { cartItems, updateCartItems } = useContext(CartItemsContext);
+  const { data: session } = useSession({ required: true });
   var precioTotal = 0;
   
   cartItems.map((cartItem:any)=>{
     precioTotal = precioTotal + cartItem.product.price * cartItem.qty;
   });
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const res = await fetch(
+          `/api/users/${session!.user._id}/cart`,
+          {
+            method: 'GET',
+            // body: JSON.stringify({cartItems}),
+          }
+        ); 
+
+        if (res.ok) {
+          const body = await res.json();
+          updateCartItems(body.cartItems);
+        }
+      } catch (error) {
+        console.error('Error getting cart:', error);
+      }
+    };
+
+    fetchCart();
+  }, [session, updateCartItems]);
 
   return (
     <>

@@ -17,10 +17,10 @@ export interface ProductsResponse {
 }
 
 export interface ProductResponse {
-  name: true;
-  description: true;
-  price: true;
-  img: true;
+  name: string;
+  description: string;
+  price: number;
+  img: string;
 }
 
 export interface UpdateCartItemResponse {

@@ -6,6 +6,7 @@ import { Session, getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { CartItemsContext } from '@/providers/CartItemsProvider';
 import CartItemCounter from '@/components/CartItemCounter';
+import CartItemCounterWrapper from '@/components/CartItemCounterWrapper';
 
 export default async function Product({
   params,
@@ -26,12 +27,7 @@ export default async function Product({
   return (
     <div className='flex flex-col sm:flex-row'>
       <div className='mx-auto max-w-sm'>
-        <img
-          className='w-full rounded-lg object-cover object-center group-hover:opacity-75'
-          src={product.img}
-          alt={product.name}
-          
-        />
+        <img src={product.img} alt={product.name} className='h-1/2 w-1/2' />
 
         <div className='my-5 text-center'>
           {product.price && (
@@ -45,8 +41,11 @@ export default async function Product({
             </p>
           )}
         </div>
-
-        {session && (<CartItemCounter productId={params.productId}/>)}
+        <div className='flex justify-center'>
+          <CartItemCounterWrapper productId={params.productId}>
+            <CartItemCounter productId={params.productId} />
+          </CartItemCounterWrapper>
+        </div>
       </div>
 
       <div className='ml-5 w-full sm:w-1/2'>
